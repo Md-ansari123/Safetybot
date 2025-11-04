@@ -1,0 +1,180 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Mining Safety Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/genai": "https://aistudiocdn.com/@google/genai@^1.28.0",
+          "react/": "https://aistudiocdn.com/react@^19.2.0/",
+          "react": "https://aistudiocdn.com/react@^19.2.0",
+          "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
+        }
+      }
+    </script>
+    <style>
+      .bot-avatar .mouth,
+      .bot-avatar .eye,
+      .bot-avatar .eyebrow,
+      .bot-avatar .glow-circle,
+      .bot-avatar .circuit-lines {
+        transition: all 0.3s ease-in-out;
+        transform-origin: 50% 50%;
+      }
+      .bot-avatar .glow-circle {
+        opacity: 0;
+      }
+
+      /* Speaking State */
+      .bot-avatar.is-talking .mouth {
+        animation: talking-anim 0.8s infinite ease-in-out;
+      }
+      .bot-avatar.is-talking .glow-circle {
+        opacity: 1;
+        animation: glow-anim 1.5s infinite ease-in-out;
+      }
+      .bot-avatar.is-talking .eyebrow {
+        animation: eyebrow-raise-anim 1.2s infinite ease-in-out;
+      }
+
+      /* Listening State */
+      .bot-avatar.is-listening .eye {
+        animation: blinking-anim 5s infinite ease-in-out;
+      }
+
+      /* Connecting State */
+      .bot-avatar.is-connecting .circuit-lines {
+        animation-duration: 2s;
+        animation-iteration-count: infinite;
+        animation-timing-function: ease-in-out;
+      }
+
+      /* Thinking State */
+      .bot-avatar.is-thinking .left-eyebrow {
+        animation: eyebrow-think-left-anim 0.4s ease-in-out forwards;
+      }
+      .bot-avatar.is-thinking .right-eyebrow {
+        animation: eyebrow-think-right-anim 0.4s ease-in-out forwards;
+      }
+      .bot-avatar.is-thinking .circuit-lines {
+        animation-duration: 1.5s;
+        animation-iteration-count: infinite;
+        animation-direction: alternate;
+        animation-timing-function: ease-in-out;
+      }
+
+      /* Concerned State */
+      .bot-avatar.is-concerned .left-eyebrow {
+        animation: eyebrow-concern-left-anim 0.5s ease-in-out forwards;
+      }
+      .bot-avatar.is-concerned .right-eyebrow {
+        animation: eyebrow-concern-right-anim 0.5s ease-in-out forwards;
+      }
+
+      /* Alert State */
+      .bot-avatar.is-alert .eye {
+        animation: eye-alert-anim 0.5s infinite alternate;
+      }
+      .bot-avatar.is-alert .circuit-lines {
+        animation: circuit-alert-anim 1s infinite ease-in-out;
+      }
+      .bot-avatar.is-alert .glow-circle {
+          opacity: 1;
+          animation: glow-alert-anim 1s infinite ease-in-out;
+      }
+
+      /* Happy State */
+      .bot-avatar.is-happy .mouth {
+        animation: mouth-happy-anim 0.4s ease-in-out forwards;
+      }
+      .bot-avatar.is-happy .eye {
+        animation: eye-happy-anim 0.4s ease-in-out forwards;
+      }
+
+      /* Focused State */
+      .bot-avatar.is-focused .left-eyebrow {
+        animation: eyebrow-focus-left-anim 0.4s ease-in-out forwards;
+      }
+      .bot-avatar.is-focused .right-eyebrow {
+        animation: eyebrow-focus-right-anim 0.4s ease-in-out forwards;
+      }
+      .bot-avatar.is-focused .circuit-lines {
+        animation-duration: 0.8s;
+        animation-iteration-count: infinite;
+        animation-direction: alternate;
+        animation-timing-function: ease-in-out;
+      }
+
+
+      @keyframes talking-anim {
+        0% { transform: scaleY(0.6); }
+        50% { transform: scaleY(1.2); }
+        100% { transform: scaleY(0.6); }
+      }
+      @keyframes glow-anim {
+        0% { transform: scale(1.0); opacity: 0.7; }
+        50% { transform: scale(1.05); opacity: 1; }
+        100% { transform: scale(1.0); opacity: 0.7; }
+      }
+      @keyframes blinking-anim {
+        0%, 90%, 100% { transform: scaleY(1); }
+        95% { transform: scaleY(0.1); }
+      }
+      @keyframes eyebrow-raise-anim {
+        0%, 100% { transform: translateY(0); }
+        10%, 40% { transform: translateY(-1.5px); }
+      }
+      /* This is now a placeholder; theme-specific animations are injected via JS */
+      @keyframes thinking-anim {
+        from { stroke: rgba(52, 211, 153, 0.4); }
+        to { stroke: rgba(110, 231, 183, 0.9); }
+      }
+
+      /* New Expression Keyframes */
+      @keyframes eyebrow-concern-left-anim {
+        to { transform: rotate(10deg) translateY(1px); }
+      }
+      @keyframes eyebrow-concern-right-anim {
+        to { transform: rotate(-10deg) translateY(1px); }
+      }
+      @keyframes eye-alert-anim {
+        from { fill: rgb(239, 68, 68); } /* red-500 */
+        to { fill: rgb(252, 165, 165); } /* red-300 */
+      }
+      @keyframes circuit-alert-anim {
+        0%, 100% { stroke: rgba(239, 68, 68, 0.4); } /* red-500 */
+        50% { stroke: rgba(252, 165, 165, 0.9); } /* red-300 */
+      }
+      @keyframes glow-alert-anim {
+          0% { transform: scale(1.0); opacity: 0.6; fill: url(#alertGlow) }
+          50% { transform: scale(1.05); opacity: 0.9; fill: url(#alertGlow) }
+          100% { transform: scale(1.0); opacity: 0.6; fill: url(#alertGlow) }
+      }
+      @keyframes eyebrow-think-left-anim {
+        to { transform: translateY(1.5px) rotate(-4deg); }
+      }
+      @keyframes eyebrow-think-right-anim {
+        to { transform: translateY(1.5px) rotate(4deg); }
+      }
+      @keyframes mouth-happy-anim {
+        to { transform: translateY(-2px) scale(1.05, 1.1); }
+      }
+      @keyframes eye-happy-anim {
+        to { transform-origin: center bottom; transform: scaleY(0.8); }
+      }
+      @keyframes eyebrow-focus-left-anim {
+        to { transform: translateY(2px) rotate(2deg); }
+      }
+      @keyframes eyebrow-focus-right-anim {
+        to { transform: translateY(2px) rotate(-2deg); }
+      }
+    </style>
+  </head>
+  <body class="bg-gray-900 text-white antialiased">
+    <div id="root"></div>
+  </body>
+</html>

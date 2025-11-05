@@ -1,5 +1,3 @@
-
-
 // Encodes raw audio data (Uint8Array) into a Base64 string.
 export function encode(bytes: Uint8Array): string {
   let binary = '';

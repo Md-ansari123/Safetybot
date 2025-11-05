@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -7,15 +6,17 @@
     <title>AI Mining Safety Assistant</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="importmap">
-      {
-        "imports": {
-          "@google/genai": "https://aistudiocdn.com/@google/genai@^1.28.0",
-          "react/": "https://aistudiocdn.com/react@^19.2.0/",
-          "react": "https://aistudiocdn.com/react@^19.2.0",
-          "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
-        }
-      }
-    </script>
+{
+  "imports": {
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.28.0",
+    "react": "https://aistudiocdn.com/react@18.3.1",
+    "react/jsx-runtime": "https://aistudiocdn.com/react@18.3.1/jsx-runtime",
+    "react-dom/client": "https://aistudiocdn.com/react-dom@18.3.1/client",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
+  }
+}
+</script>
     <style>
       .bot-avatar .mouth,
       .bot-avatar .eye,
@@ -50,20 +51,6 @@
       .bot-avatar.is-connecting .circuit-lines {
         animation-duration: 2s;
         animation-iteration-count: infinite;
-        animation-timing-function: ease-in-out;
-      }
-
-      /* Thinking State */
-      .bot-avatar.is-thinking .left-eyebrow {
-        animation: eyebrow-think-left-anim 0.4s ease-in-out forwards;
-      }
-      .bot-avatar.is-thinking .right-eyebrow {
-        animation: eyebrow-think-right-anim 0.4s ease-in-out forwards;
-      }
-      .bot-avatar.is-thinking .circuit-lines {
-        animation-duration: 1.5s;
-        animation-iteration-count: infinite;
-        animation-direction: alternate;
         animation-timing-function: ease-in-out;
       }
 
@@ -154,12 +141,6 @@
           50% { transform: scale(1.05); opacity: 0.9; fill: url(#alertGlow) }
           100% { transform: scale(1.0); opacity: 0.6; fill: url(#alertGlow) }
       }
-      @keyframes eyebrow-think-left-anim {
-        to { transform: translateY(1.5px) rotate(-4deg); }
-      }
-      @keyframes eyebrow-think-right-anim {
-        to { transform: translateY(1.5px) rotate(4deg); }
-      }
       @keyframes mouth-happy-anim {
         to { transform: translateY(-2px) scale(1.05, 1.1); }
       }
@@ -173,8 +154,9 @@
         to { transform: translateY(2px) rotate(-2deg); }
       }
     </style>
-  </head>
+</head>
   <body class="bg-gray-900 text-white antialiased">
     <div id="root"></div>
+    <script type="module" src="./index.tsx"></script>
   </body>
 </html>

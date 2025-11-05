@@ -2,7 +2,6 @@
   "name": "AI Mining Safety Assistant",
   "description": "A voice-activated AI partner for miners. Get safety guidance, report incidents, and check weather conditions through a natural conversation with your Safety Officer, Jaaved Khan.",
   "requestFramePermissions": [
-    "microphone",
-    "geolocation"
+    "microphone"
   ]
 }
